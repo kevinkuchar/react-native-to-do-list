@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
+import { inject, observer } from 'mobx-react';
 import { StyleSheet, Image, Text, View, TextInput } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import img from '../assets/logo.png';
 import { colors } from '../style/colors.js';
 import AccentButton from '../components/AccentButton.js';
-import ListService from './../data/ListService';
+import ListService from './../data/services/ListService';
 
+@inject('ListStore')
+@observer
 class SelectListScreen extends Component {
   static navigationOptions = {
     title: 'Try It Out - The List'
@@ -18,8 +21,8 @@ class SelectListScreen extends Component {
     };
   }
 
-  _onPressButton() {
-    ListService.get().done(item => console.log('tes', item));
+  _onPressButton = () => {
+    ListService.get();
   }
 
   render() {
@@ -38,7 +41,7 @@ class SelectListScreen extends Component {
           </View>
           <TextInput
             style={styles.input}
-            placeholder="Example: Kevin's List"
+            placeholder="Create a new List"
             onChangeText={text => this.setState({ text })}
           />
           <AccentButton onPressButton={this._onPressButton} copy="Create List" />

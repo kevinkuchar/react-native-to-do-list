@@ -1,34 +1,66 @@
+const defaultHeaders = {
+  'Accept': 'application/json',
+  'Content-Type': 'application/json',
+};
+
+/**
+ * Transforms an object into a query string.
+ */
+const getQueryString = params => Object.keys(params)
+  .map(key => `${key}=${encodeURIComponent(params[key])}`)
+  .join('&');
+
+/**
+ * Combines a url and query parameters to a new url.
+*/
+const createUrlWithParams = (url, params) => `${url}?${getQueryString(params)}`;
+
 class Service {
   constructor(opts) {
     this.url = opts.url;
+    this.actions = opts.actions || {};
   }
 
-  _getQueryString = params => Object.keys(params)
-    .map(key => `${key}=${encodeURIComponent(params[key])}`)
-    .join('&');
-
+  /**
+   * Returns a Promise using the Fetch API
+   * This method is used to create get() and post()
+   * methods on this class.
+   */
   _request = (params, opts) => {
-    let body;
-    const method = opts.method || 'GET';
-    const headers = opts.headers || {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
+    const isGetOrDelete = ['GET', 'DELETE'].includes(opts.method);
+    const config = {
+      method: opts.method,
+      headers: opts.headers || defaultHeaders,
+      body: !isGetOrDelete ? JSON.stringify(params) : null
     };
 
-    if (['GET', 'DELETE'].includes(opts.method)) {
-      this.url = `${this.url}?${this._getQueryString(params)}`;
-    } else {
-      body = JSON.stringify(params);
+    if (isGetOrDelete) {
+      this.url = createUrlWithParams(this.url, params);
     }
 
-    return fetch(this.url, { method, headers, body })
+    return fetch(this.url, config)
       .then(response => response.json())
-      .catch((error) => {
-        console.error(error);
-      });
+      .then(this._onSuccessThunk)
+      .catch(error => console.log(error));
   }
 
-  get(params = {}, opts = {}) {
+  /**
+   * Invoked upon a successful fetch.
+   * If an action is passed into the constructor with the correct
+   * method name, call it with the response data.
+   */
+  _onSuccessThunk = (response) => {
+    if (this.actions.get) {
+      this.actions.get(response);
+    }
+
+    return response;
+  }
+
+  /**
+   * Performs a GET operation
+   */
+  get = (params = {}, opts = {}) => {
     return this._request(params, {
       method: 'GET',
       ...opts
@@ -37,10 +69,3 @@ class Service {
 }
 
 export default Service;
-
-// export default {
-//   get: params => request(Object.assign({ method: 'GET' }, params)),
-//   post: params => request(Object.assign({ method: 'POST' }, params)),
-//   put: params => request(Object.assign({ method: 'PUT' }, params)),
-//   delete: params => request(Object.assign({ method: 'DELETE' }, params))
-// };

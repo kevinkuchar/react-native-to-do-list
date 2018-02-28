@@ -31,6 +31,10 @@
         "no-debugger":"off",
         "jsx-a11y/alt-text": "off",
         "no-use-before-define": "off",
-        "no-underscore-dangle": "off"
+        "no-underscore-dangle": "off",
+        "quote-props": "off"
+    },
+    "globals": {
+      "fetch": true
     }
 }
