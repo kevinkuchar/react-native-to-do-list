@@ -2,7 +2,7 @@
 const Chathams = '#10437D';
 const FunBlue = '#18579f';
 const DownRiver = '#082749';
-
+const CornFlower = '#52e5ff';
 // Greens
 const Sushi = '#73BF43';
 const Olive = '#4E9229';
@@ -26,7 +26,8 @@ export const colors = {
   error: Pomegranate,
   errorDark: Thunderbird,
   headerBg: CodGray,
-  textLight: Concrete
+  textLight: Concrete,
+  highlight: CornFlower
 };
 
 export default colors;

@@ -1,13 +1,14 @@
 import React from 'react';
 import { Provider } from 'mobx-react';
 import { StackNavigator } from 'react-navigation';
-import SelectListScreen from './src/screens/SelectListScreen';
+import CreateListScreen from './src/screens/CreateListScreen';
 import ViewListScreen from './src/screens/ViewListScreen';
+import SelectListScreen from './src/screens/SelectListScreen';
 import { colors } from './src/style/colors.js';
 import ListStore from './src/data/stores/ListStore';
 
 const NavigatorStyle = {
-  initialRouteName: 'SelectList',
+  initialRouteName: 'CreateList',
   navigationOptions: {
     headerStyle: {
       backgroundColor: colors.headerBg
@@ -18,10 +19,13 @@ const NavigatorStyle = {
 
 const NavigatorRoutes = {
   ViewList: {
-    screen: ViewListScreen,
+    screen: ViewListScreen
+  },
+  CreateList: {
+    screen: CreateListScreen
   },
   SelectList: {
-    screen: SelectListScreen,
+    screen: SelectListScreen
   }
 };
 

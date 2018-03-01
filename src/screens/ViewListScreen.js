@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
 
 class ViewListScreen extends React.Component {
     static navigationOptions = {
-      title: 'ViewList'
+      title: 'Is this even right?'
     };
 
     render() {

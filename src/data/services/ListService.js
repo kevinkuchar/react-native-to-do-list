@@ -1,5 +1,5 @@
-import Service from './Service';
-import ListStore from '../data/stores/ListStore';
+import Service from '../Service';
+import ListStore from '../stores/ListStore';
 
 const ListService = new Service({
   url: 'http://192.168.1.76/to-do-api/public/api/list',
