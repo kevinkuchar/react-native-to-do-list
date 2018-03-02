@@ -26,7 +26,7 @@ class SelectListScreen extends Component {
     }
 
     return lists.map(list => (
-      <Text>{list.list_name}</Text>
+      <Text key={list.id}>{list.list_name}</Text>
     ));
   }
 

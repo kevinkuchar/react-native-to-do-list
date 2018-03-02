@@ -40,8 +40,8 @@ class Service {
 
     return fetch(this.url, config)
       .then(response => response.json())
-      .then(this._onSuccessThunk)
-      .catch(error => console.log(error));
+      .then(this._onSuccessThunk(config))
+      .catch();
   }
 
   /**
@@ -49,12 +49,18 @@ class Service {
    * If an action is passed into the constructor with the correct
    * method name, call it with the response data.
    */
-  _onSuccessThunk = (response) => {
-    if (this.actions.get) {
-      this.actions.get(response);
-    }
+  _onSuccessThunk = (config) => {
+    return (response) => {
+      if (!response.ok) {
+        return { error: 'error' };
+      }
 
-    return response;
+      if (this.actions[config.method]) {
+        this.actions[config.method](response);
+      }
+
+      return response;
+    };
   }
 
   /**
@@ -63,6 +69,16 @@ class Service {
   get = (params = {}, opts = {}) => {
     return this._request(params, {
       method: 'GET',
+      ...opts
+    });
+  }
+
+  /**
+   * Performs a POST operation
+   */
+  create = (params = {}, opts = {}) => {
+    return this._request(params, {
+      method: 'POST',
       ...opts
     });
   }
