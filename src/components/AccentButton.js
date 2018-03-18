@@ -1,29 +1,47 @@
 import React from 'react';
-import { View, Text, TouchableWithoutFeedback, StyleSheet } from 'react-native';
-import { colors } from '../style/colors.js';
+import { View, TouchableWithoutFeedback, StyleSheet } from 'react-native';
+import AppText from './AppText';
+import { colors } from '../style/styles';
 
-const AccentButton = ({ copy, onPressButton }) => (
-  <TouchableWithoutFeedback onPress={onPressButton}>
-    <View style={styles.button}>
-      <Text style={styles.buttonText}>{ copy }</Text>
-    </View>
-  </TouchableWithoutFeedback>
-);
+const PRIMARY_STYLES = {
+  backgroundColor: colors.accent,
+  borderBottomColor: colors.accentDark,
+  borderRightColor: colors.accentDark
+};
+
+const SECONDARY_STYLES = {
+  backgroundColor: colors.highlight,
+  borderBottomColor: colors.highlightDark,
+  borderRightColor: colors.highlightDark
+};
+
+const AccentButton = ({ copy, onPressButton, type }) => {
+  const buttonStyle = {
+    ...type === 'primary' ? PRIMARY_STYLES : SECONDARY_STYLES,
+    ...StyleSheet.flatten(styles.button)
+  };
+
+  return (
+    <TouchableWithoutFeedback onPress={onPressButton}>
+      <View style={buttonStyle}>
+        <AppText style={styles.buttonText}>{ copy }</AppText>
+      </View>
+    </TouchableWithoutFeedback>
+  );
+};
 
 const styles = StyleSheet.create({
   button: {
     width: undefined,
-    backgroundColor: colors.accent,
     alignItems: 'center',
     alignSelf: 'stretch',
     borderRadius: 10,
     borderBottomWidth: 3,
-    borderBottomColor: colors.accentDark,
     borderRightWidth: 3,
-    borderRightColor: colors.accentDark
+    flex: 1
   },
   buttonText: {
-    fontSize: 18,
+    fontSize: 20,
     padding: 18,
     color: colors.textLight
   }

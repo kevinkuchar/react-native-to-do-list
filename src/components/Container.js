@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { colors } from '../style/colors.js';
+import { colors } from '../style/styles';
 
 const CreateListScreen = ({ children }) => (
   <View style={styles.container}>

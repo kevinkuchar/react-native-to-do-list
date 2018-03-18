@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx';
+import { observable, computed, action } from 'mobx';
 
 class ListStore {
   @observable lists = [];
@@ -14,6 +14,10 @@ class ListStore {
 
   @action updateActiveList = (listId) => {
     this.activeList = listId;
+  }
+
+  @computed get currentList() {
+    return this.lists.find(list => list.id === this.activeList);
   }
 }
 

@@ -1,86 +1,44 @@
-const defaultHeaders = {
-  'Accept': 'application/json',
-  'Content-Type': 'application/json',
-};
-
-/**
- * Transforms an object into a query string.
- */
-const getQueryString = params => Object.keys(params)
-  .map(key => `${key}=${encodeURIComponent(params[key])}`)
-  .join('&');
-
-/**
- * Combines a url and query parameters to a new url.
-*/
-const createUrlWithParams = (url, params) => `${url}?${getQueryString(params)}`;
+import axios from 'axios';
 
 class Service {
   constructor(opts) {
     this.url = opts.url;
     this.actions = opts.actions || {};
+    this.axios = axios.create({
+      baseURL: 'http://192.168.1.76/to-do-api/public/api/',
+      timeout: 5000
+    });
+  }
+
+  get(params) {
+    return this.axios.get(this.url, params)
+      .then(this._onSuccessThunk({ method: 'GET' }))
+      .catch(this._onErrorThunk);
+  }
+
+  post(params) {
+    return this.axios.post(this.url, params)
+      .then(this._onSuccessThunk({ method: 'POST' }))
+      .catch(this._onErrorThunk);
   }
 
   /**
-   * Returns a Promise using the Fetch API
-   * This method is used to create get() and post()
-   * methods on this class.
-   */
-  _request = (params, opts) => {
-    const isGetOrDelete = ['GET', 'DELETE'].includes(opts.method);
-    const config = {
-      method: opts.method,
-      headers: opts.headers || defaultHeaders,
-      body: !isGetOrDelete ? JSON.stringify(params) : null
-    };
-
-    if (isGetOrDelete) {
-      this.url = createUrlWithParams(this.url, params);
-    }
-
-    return fetch(this.url, config)
-      .then(response => response.json())
-      .then(this._onSuccessThunk(config))
-      .catch();
-  }
-
-  /**
-   * Invoked upon a successful fetch.
-   * If an action is passed into the constructor with the correct
-   * method name, call it with the response data.
+   * Invoked upon a successful request.
+   * If an action is passed into the constructor with request method name
+   * we pass the response data into the action.
    */
   _onSuccessThunk = (config) => {
     return (response) => {
-      if (!response.ok) {
-        return { error: 'error' };
-      }
-
       if (this.actions[config.method]) {
-        this.actions[config.method](response);
+        this.actions[config.method](response.data);
       }
 
       return response;
     };
   }
 
-  /**
-   * Performs a GET operation
-   */
-  get = (params = {}, opts = {}) => {
-    return this._request(params, {
-      method: 'GET',
-      ...opts
-    });
-  }
-
-  /**
-   * Performs a POST operation
-   */
-  create = (params = {}, opts = {}) => {
-    return this._request(params, {
-      method: 'POST',
-      ...opts
-    });
+  _onErrorThunk = (response) => {
+    console.log(response);
   }
 }
 
